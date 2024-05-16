@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>質問</title>
+</head>
+<body>
+    <h1>{{ question }}</h1>
+    <form method="post">
+        {% for choice in choices %}
+            <label>
+                <input type="radio" name="choice" value="{{ choice }}" required>
+                {{ choice }}
+            </label><br>
+        {% endfor %}
+        <button type="submit">次へ</button>
+    </form>
+    <div>
+        <p>進捗: {{ progress }}%</p>
+        <p><a href="#">{{ reference }}</a></p>
+    </div>
+</body>
+</html>
