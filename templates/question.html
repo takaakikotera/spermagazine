@@ -4,30 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Question</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>{{ question }}</h1>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li style="color: red;">{{ message }}</li>
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress" style="width: {{ progress }}%;"></div>
+        </div>
+        <div class="question-box">
+            <h1>{{ question }}</h1>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                            <li style="color: red;">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+            <form method="post">
+                {% for choice in choices %}
+                    <div>
+                        <input type="radio" id="{{ choice }}" name="choice" value="{{ choice }}">
+                        <label for="{{ choice }}">{{ choice }}</label>
+                    </div>
                 {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-    <form method="post">
-        {% for choice in choices %}
-            <div>
-                <input type="radio" id="{{ choice }}" name="choice" value="{{ choice }}">
-                <label for="{{ choice }}">{{ choice }}</label>
+                <button type="submit">Next</button>
+            </form>
+            <div class="reference">
+                <p>Reference: {{ reference }}</p>
             </div>
-        {% endfor %}
-        <button type="submit">Next</button>
-    </form>
-    <div>
-        <p>Reference: {{ reference }}</p>
-        <p>Progress: {{ progress }}%</p>
+        </div>
     </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
