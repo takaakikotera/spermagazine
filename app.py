@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key')
 
 # Load the diagnostic data
-file_path = '/path/to/your/diagnosis_tool.xlsx'  # Correct the file path
+file_path = 'diagnosis_tool.xlsx'  # Correct the file path
 xls = pd.ExcelFile(file_path)
 diagnostic_tool_df = pd.read_excel(xls, '診断ツール')
 
