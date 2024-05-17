@@ -8,18 +8,16 @@ app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key')
 # Load the diagnostic data
 file_path = 'diagnosis_tool.xlsx'
 xls = pd.ExcelFile(file_path)
-diagnostic_tool_df = pd.read_excel(xls, '診断ツール')
+diagnostic_tool_df = pd.read_excel(xls, '診断ツール', header=None)  # ヘッダーを無視してデータを読み込む
 
-# Clean and prepare the data
-# 最初の行をデータとして含める
-diagnostic_tool_clean_df = diagnostic_tool_df.dropna(how='all').reset_index(drop=True)
-diagnostic_tool_clean_df.columns = ['Question', 'Choice', 'Score', 'Reference']
+# 手動で列名を設定
+diagnostic_tool_df.columns = ['Question', 'Choice', 'Score', 'Reference']
 
 # データの抽出
-questions = diagnostic_tool_clean_df['Question']
-choices = diagnostic_tool_clean_df['Choice']
-scores = diagnostic_tool_clean_df['Score']
-references = diagnostic_tool_clean_df['Reference']
+questions = diagnostic_tool_df['Question']
+choices = diagnostic_tool_df['Choice']
+scores = diagnostic_tool_df['Score']
+references = diagnostic_tool_df['Reference']
 
 diagnostic_data = pd.DataFrame({
     'Question': questions,
