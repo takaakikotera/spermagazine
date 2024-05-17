@@ -13,9 +13,9 @@ diagnostic_tool_df = pd.read_excel(xls, '診断ツール')
 # Clean and prepare the data
 diagnostic_tool_clean_df = diagnostic_tool_df.dropna(how='all').reset_index(drop=True)
 questions = diagnostic_tool_clean_df.iloc[2:, 1].dropna().reset_index(drop=True)
-choices = diagnostic_tool_clean_df.iloc[2:, 2].dropna().reset_index(dropよ)
-scores = diagnostic_tool_clean_df.iloc[2:, 3].dropna().reset_index(dropよ)
-references = diagnostic_tool_clean_df.iloc[2:, 5].dropna().reset_index(dropよ)
+choices = diagnostic_tool_clean_df.iloc[2:, 2].dropna().reset_index(drop=True)
+scores = diagnostic_tool_clean_df.iloc[2:, 3].dropna().reset_index(drop=True)
+references = diagnostic_tool_clean_df.iloc[2:, 5].dropna().reset_index(drop=True)
 
 # Combine into a single DataFrame for easier manipulation
 diagnostic_data = pd.DataFrame({
