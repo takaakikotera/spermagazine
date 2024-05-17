@@ -32,6 +32,7 @@ print(diagnostic_data)
 
 @app.route('/')
 def index():
+    session.clear()
     return render_template('index.html')
 
 @app.route('/question/<int:id>', methods=['GET', 'POST'])
