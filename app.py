@@ -26,6 +26,9 @@ diagnostic_data = pd.DataFrame({
     'Reference': references
 })
 
+# スコアを数値に変換
+diagnostic_data['Score'] = diagnostic_data['Score'].apply(lambda x: ','.join([str(float(s)) for s in x.split(',')]))
+
 # デバッグ用の出力
 print("Diagnostic Data:")
 print(diagnostic_data)
@@ -80,15 +83,15 @@ def calculate_score(answers):
     total_score = 0
     for i, answer in enumerate(answers):
         choice_list = diagnostic_data['Choice'].iloc[i].split(',')
-        score_list = diagnostic_data['Score'].iloc[i].split(',')
-        score_dict = {c.strip(): s.strip() for c, s in zip(choice_list, score_list)}
+        score_list = [float(s) for s in diagnostic_data['Score'].iloc[i].split(',')]
+        score_dict = {c.strip(): s for c, s in zip(choice_list, score_list)}
         print(f"Question {i}:")
         print(f"Answer: {answer}")
         print(f"Choices: {choice_list}")
         print(f"Scores: {score_list}")
         print(f"Score Dict: {score_dict}")
         if answer in score_dict:
-            total_score += float(score_dict[answer])
+            total_score += score_dict[answer]
         else:
             print(f"Answer '{answer}' not found in choices.")
     print(f"Total Score: {total_score}")
