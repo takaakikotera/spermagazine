@@ -8,7 +8,7 @@ app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key')
 # Load the diagnostic data
 file_path = 'diagnosis_tool.xlsx'
 xls = pd.ExcelFile(file_path)
-diagnostic_tool_df = pd.read_excel(xls, '診断ツール', header=None)  # ヘッダーを無視してデータを読み込む
+diagnostic_tool_df = pd.read_excel(xls, '診断ツール', header=None)
 
 # 手動で列名を設定
 diagnostic_tool_df.columns = ['Question', 'Choice', 'Score', 'Reference']
@@ -40,7 +40,7 @@ def question(id):
     try:
         if id >= len(diagnostic_data):
             return "Question ID out of range", 404
-        
+
         if request.method == 'POST':
             answer = request.form.get('choice')
             if answer is None:
@@ -50,7 +50,7 @@ def question(id):
                 session['answers'] = []
             session['answers'].append(answer)
             print(f"Answers so far: {session['answers']}")  # デバッグ用の出力
-            
+
             if id < len(diagnostic_data) - 1:
                 return redirect(url_for('question', id=id + 1))
             else:
@@ -81,7 +81,7 @@ def calculate_score(answers):
     for i, answer in enumerate(answers):
         choice_list = diagnostic_data['Choice'].iloc[i].split(',')
         score_list = diagnostic_data['Score'].iloc[i].split(',')
-        score_dict = dict(zip(choice_list, score_list))
+        score_dict = {c.strip(): s.strip() for c, s in zip(choice_list, score_list)}
         print(f"Question {i}:")
         print(f"Answer: {answer}")
         print(f"Choices: {choice_list}")
@@ -96,4 +96,3 @@ def calculate_score(answers):
 
 if __name__ == '__main__':
     app.run(debug=True)
-# お試しコメント
