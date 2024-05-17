@@ -6,65 +6,60 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key')
 
 # Load the diagnostic data
-try:
-    file_path = 'diagnosis_tool.csv'
-    diagnostic_tool_df = pd.read_csv(file_path)
+file_path = 'diagnosis_tool.xlsx'
+xls = pd.ExcelFile(file_path)
+diagnostic_tool_df = pd.read_excel(xls, '診断ツール', header=None)
 
-    # 手動で列名を設定（必要に応じて）
-    diagnostic_tool_df.columns = ['Question', 'Choice', 'Score', 'Reference']
+# 手動で列名を設定
+diagnostic_tool_df.columns = ['Question', 'Choice', 'Score', 'Reference']
 
-    # スコアを数値として扱うように変換
-    diagnostic_tool_df['Score'] = diagnostic_tool_df['Score'].apply(lambda x: ','.join([str(float(s)) for s in x.split(',')]))
+# データの抽出
+questions = diagnostic_tool_df['Question']
+choices = diagnostic_tool_df['Choice']
+scores = diagnostic_tool_df['Score']
+references = diagnostic_tool_df['Reference']
 
-    # データの抽出
-    questions = diagnostic_tool_df['Question']
-    choices = diagnostic_tool_df['Choice']
-    scores = diagnostic_tool_df['Score']
-    references = diagnostic_tool_df['Reference']
+diagnostic_data = pd.DataFrame({
+    'Question': questions,
+    'Choice': choices,
+    'Score': scores,
+    'Reference': references
+})
 
-    diagnostic_data = pd.DataFrame({
-        'Question': questions,
-        'Choice': choices,
-        'Score': scores,
-        'Reference': references
-    })
-
-    # デバッグ用の出力
-    print("Diagnostic Data:")
-    print(diagnostic_data)
-except Exception as e:
-    print(f"Error loading diagnostic data: {e}")
+# デバッグ用の出力
+print("Diagnostic Data:")
+print(diagnostic_data)
 
 @app.route('/')
 def index():
     session.clear()
     return render_template('index.html')
 
-@app.route('/question/<int:question_id>', methods=['GET', 'POST'])
-def question(question_id):
+@app.route('/question/<int:id>', methods=['GET', 'POST'])
+def question(id):
     try:
-        if question_id >= len(diagnostic_data):
+        if id >= len(diagnostic_data):
             return "Question ID out of range", 404
 
         if request.method == 'POST':
-            answer = request.form.get('answer')
+            answer = request.form.get('choice')
             if answer is None:
                 flash('Please select an option before proceeding.')
-                return redirect(url_for('question', question_id=question_id))
+                return redirect(url_for('question', id=id))
             if 'answers' not in session:
                 session['answers'] = []
             session['answers'].append(answer)
             print(f"Answers so far: {session['answers']}")  # デバッグ用の出力
 
-            if question_id < len(diagnostic_data) - 1:
-                return redirect(url_for('question', question_id=question_id + 1))
+            if id < len(diagnostic_data) - 1:
+                return redirect(url_for('question', id=id + 1))
             else:
                 return redirect(url_for('analysis'))
 
-        question = diagnostic_data['Question'].iloc[question_id]
-        choice_list = diagnostic_data['Choice'].iloc[question_id].split(',')
-        reference = diagnostic_data['Reference'].iloc[question_id]
-        progress = (question_id + 1) / len(diagnostic_data) * 100
+        question = diagnostic_data['Question'].iloc[id]
+        choice_list = diagnostic_data['Choice'].iloc[id].split(',')
+        reference = diagnostic_data['Reference'].iloc[id]
+        progress = (id + 1) / len(diagnostic_data) * 100
 
         return render_template('question.html', question=question, choices=choice_list, reference=reference, progress=progress)
     except Exception as e:
@@ -78,31 +73,25 @@ def analysis():
 def result():
     answers = session.get('answers', [])
     print(f"Final Answers: {answers}")  # デバッグ用の出力
-    try:
-        score = calculate_score(answers)
-        return render_template('result.html', score=score)
-    except Exception as e:
-        return f"Error calculating score: {e}"
+    score = calculate_score(answers)
+    return render_template('result.html', score=score)
 
 def calculate_score(answers):
     total_score = 0
-    try:
-        for i, answer in enumerate(answers):
-            choice_list = diagnostic_data['Choice'].iloc[i].split(',')
-            score_list = [float(s) for s in diagnostic_data['Score'].iloc[i].split(',')]
-            score_dict = {c.strip(): s for c, s in zip(choice_list, score_list)}
-            print(f"Question {i}:")
-            print(f"Answer: {answer}")
-            print(f"Choices: {choice_list}")
-            print(f"Scores: {score_list}")
-            print(f"Score Dict: {score_dict}")
-            if answer in score_dict:
-                total_score += score_dict[answer]
-            else:
-                print(f"Answer '{answer}' not found in choices.")
-        print(f"Total Score: {total_score}")
-    except Exception as e:
-        print(f"Error calculating score: {e}")
+    for i, answer in enumerate(answers):
+        choice_list = diagnostic_data['Choice'].iloc[i].split(',')
+        score_list = diagnostic_data['Score'].iloc[i].split(',')
+        score_dict = {c.strip(): s.strip() for c, s in zip(choice_list, score_list)}
+        print(f"Question {i}:")
+        print(f"Answer: {answer}")
+        print(f"Choices: {choice_list}")
+        print(f"Scores: {score_list}")
+        print(f"Score Dict: {score_dict}")
+        if answer in score_dict:
+            total_score += float(score_dict[answer])
+        else:
+            print(f"Answer '{answer}' not found in choices.")
+    print(f"Total Score: {total_score}")
     return total_score
 
 if __name__ == '__main__':
