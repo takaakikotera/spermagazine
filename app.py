@@ -83,7 +83,10 @@ def calculate_score(answers):
         print(f"Choices: {choice_list}")
         print(f"Scores: {score_list}")
         print(f"Score Dict: {score_dict}")
-        total_score += float(score_dict.get(answer, 0))
+        if answer in score_dict:
+            total_score += float(score_dict[answer])
+        else:
+            print(f"Answer '{answer}' not found in choices.")
     print(f"Total Score: {total_score}")
     return total_score
 
