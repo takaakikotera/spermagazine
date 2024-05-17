@@ -76,7 +76,9 @@ def calculate_score(answers):
         choice_list = diagnostic_data['Choice'].iloc[i].split(',')
         score_list = diagnostic_data['Score'].iloc[i].split(',')
         score_dict = dict(zip(choice_list, score_list))
+        print(f"Answer: {answer}, Score Dict: {score_dict}")  # デバッグ用の出力
         total_score += float(score_dict.get(answer, 0))
+    print(f"Total Score: {total_score}")  # デバッグ用の出力
     return total_score
 
 if __name__ == '__main__':
