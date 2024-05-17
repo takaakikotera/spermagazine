@@ -6,13 +6,13 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key')
 
 # Load the diagnostic data
-file_path = 'diagnosis_tool.xlsx'  # Correct the file path
+file_path = 'diagnosis_tool.xlsx'  # Use the relative path
 xls = pd.ExcelFile(file_path)
 diagnostic_tool_df = pd.read_excel(xls, '診断ツール')
 
 # Clean and prepare the data
 diagnostic_tool_clean_df = diagnostic_tool_df.dropna(how='all').reset_index(drop=True)
-questions = diagnostic_tool_clean_df.iloc[2:, 1].dropna().reset_index(dropよ)
+questions = diagnostic_tool_clean_df.iloc[2:, 1].dropna().reset_index(drop=True)
 choices = diagnostic_tool_clean_df.iloc[2:, 2].dropna().reset_index(dropよ)
 scores = diagnostic_tool_clean_df.iloc[2:, 3].dropna().reset_index(dropよ)
 references = diagnostic_tool_clean_df.iloc[2:, 5].dropna().reset_index(dropよ)
