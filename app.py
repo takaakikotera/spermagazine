@@ -14,10 +14,15 @@ diagnostic_tool_df = pd.read_excel(xls, '診断ツール')
 diagnostic_tool_clean_df = diagnostic_tool_df.dropna(how='all').reset_index(drop=True)
 diagnostic_tool_clean_df.columns = ['Question', 'Choice', 'Score', 'Reference']
 
-questions = diagnostic_tool_clean_df['Question'][2:].reset_index(drop=True)
-choices = diagnostic_tool_clean_df['Choice'][2:].reset_index(drop=True)
-scores = diagnostic_tool_clean_df['Score'][2:].reset_index(drop=True)
-references = diagnostic_tool_clean_df['Reference'][2:].reset_index(drop=True)
+# デバッグ用の出力
+print("Diagnostic Tool Clean DataFrame:")
+print(diagnostic_tool_clean_df)
+
+# データの抽出
+questions = diagnostic_tool_clean_df['Question']
+choices = diagnostic_tool_clean_df['Choice']
+scores = diagnostic_tool_clean_df['Score']
+references = diagnostic_tool_clean_df['Reference']
 
 diagnostic_data = pd.DataFrame({
     'Question': questions,
@@ -25,6 +30,10 @@ diagnostic_data = pd.DataFrame({
     'Score': scores,
     'Reference': references
 })
+
+# デバッグ用の出力
+print("Diagnostic Data:")
+print(diagnostic_data)
 
 @app.route('/')
 def index():
