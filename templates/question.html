@@ -2,22 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>質問</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question</title>
 </head>
 <body>
     <h1>{{ question }}</h1>
-    <form method="post">
+    <form method="POST">
         {% for choice in choices %}
-            <label>
-                <input type="radio" name="choice" value="{{ choice }}" required>
-                {{ choice }}
-            </label><br>
+            <div>
+                <input type="radio" id="{{ choice }}" name="choice" value="{{ choice }}">
+                <label for="{{ choice }}">{{ choice }}</label>
+            </div>
         {% endfor %}
-        <button type="submit">次へ</button>
+        <button type="submit">Next</button>
     </form>
-    <div>
-        <p>進捗: {{ progress }}%</p>
-        <p><a href="#">{{ reference }}</a></p>
-    </div>
+    <progress value="{{ progress }}" max="100"></progress>
+    <p><a href="{{ reference }}" target="_blank">Reference</a></p>
 </body>
 </html>
