@@ -6,12 +6,14 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key')
 
 # Load the diagnostic data
-file_path = 'diagnosis_tool.xlsx'
-xls = pd.ExcelFile(file_path)
-diagnostic_tool_df = pd.read_excel(xls, '診断ツール', header=None)
+file_path = 'diagnosis_tool.csv'
+diagnostic_tool_df = pd.read_csv(file_path)
 
-# 手動で列名を設定
+# 手動で列名を設定（必要に応じて）
 diagnostic_tool_df.columns = ['Question', 'Choice', 'Score', 'Reference']
+
+# スコアを数値として扱うように変換
+diagnostic_tool_df['Score'] = diagnostic_tool_df['Score'].apply(lambda x: ','.join([str(float(s)) for s in x.split(',')]))
 
 # データの抽出
 questions = diagnostic_tool_df['Question']
@@ -80,15 +82,15 @@ def calculate_score(answers):
     total_score = 0
     for i, answer in enumerate(answers):
         choice_list = diagnostic_data['Choice'].iloc[i].split(',')
-        score_list = diagnostic_data['Score'].iloc[i].split(',')
-        score_dict = {c.strip(): s.strip() for c, s in zip(choice_list, score_list)}
+        score_list = [float(s) for s in diagnostic_data['Score'].iloc[i].split(',')]
+        score_dict = {c.strip(): s for c, s in zip(choice_list, score_list)}
         print(f"Question {i}:")
         print(f"Answer: {answer}")
         print(f"Choices: {choice_list}")
         print(f"Scores: {score_list}")
         print(f"Score Dict: {score_dict}")
         if answer in score_dict:
-            total_score += float(score_dict[answer])
+            total_score += score_dict[answer]
         else:
             print(f"Answer '{answer}' not found in choices.")
     print(f"Total Score: {total_score}")
