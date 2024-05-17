@@ -37,31 +37,31 @@ def index():
     session.clear()
     return render_template('index.html')
 
-@app.route('/question/<int:id>', methods=['GET', 'POST'])
-def question(id):
+@app.route('/question/<int:question_id>', methods=['GET', 'POST'])
+def question(question_id):
     try:
-        if id >= len(diagnostic_data):
+        if question_id >= len(diagnostic_data):
             return "Question ID out of range", 404
 
         if request.method == 'POST':
-            answer = request.form.get('choice')
+            answer = request.form.get('answer')
             if answer is None:
                 flash('Please select an option before proceeding.')
-                return redirect(url_for('question', id=id))
+                return redirect(url_for('question', question_id=question_id))
             if 'answers' not in session:
                 session['answers'] = []
             session['answers'].append(answer)
             print(f"Answers so far: {session['answers']}")  # デバッグ用の出力
 
-            if id < len(diagnostic_data) - 1:
-                return redirect(url_for('question', id=id + 1))
+            if question_id < len(diagnostic_data) - 1:
+                return redirect(url_for('question', question_id=question_id + 1))
             else:
                 return redirect(url_for('analysis'))
 
-        question = diagnostic_data['Question'].iloc[id]
-        choice_list = diagnostic_data['Choice'].iloc[id].split(',')
-        reference = diagnostic_data['Reference'].iloc[id]
-        progress = (id + 1) / len(diagnostic_data) * 100
+        question = diagnostic_data['Question'].iloc[question_id]
+        choice_list = diagnostic_data['Choice'].iloc[question_id].split(',')
+        reference = diagnostic_data['Reference'].iloc[question_id]
+        progress = (question_id + 1) / len(diagnostic_data) * 100
 
         return render_template('question.html', question=question, choices=choice_list, reference=reference, progress=progress)
     except Exception as e:
