@@ -11,6 +11,7 @@ xls = pd.ExcelFile(file_path)
 diagnostic_tool_df = pd.read_excel(xls, '診断ツール')
 
 # Clean and prepare the data
+# 最初の行をデータとして含める
 diagnostic_tool_clean_df = diagnostic_tool_df.dropna(how='all').reset_index(drop=True)
 diagnostic_tool_clean_df.columns = ['Question', 'Choice', 'Score', 'Reference']
 
