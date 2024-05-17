@@ -2,10 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>分析中...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis</title>
 </head>
 <body>
-    <h1>分析中...</h1>
-    <p>しばらくお待ちください...</p>
+    <h1>Analysis in Progress...</h1>
+    <p>Analyzing your answers. Please wait...</p>
+    <script>
+        setTimeout(function() {
+            window.location.href = "{{ url_for('result') }}";
+        }, 3000); // 3秒後に結果ページにリダイレクト
+    </script>
 </body>
 </html>
