@@ -12,10 +12,15 @@ diagnostic_tool_df = pd.read_excel(xls, '診断ツール')
 
 # Clean and prepare the data
 diagnostic_tool_clean_df = diagnostic_tool_df.dropna(how='all').reset_index(drop=True)
-questions = diagnostic_tool_clean_df.iloc[2:, 1].dropna().reset_index(drop=True)
-choices = diagnostic_tool_clean_df.iloc[2:, 2].dropna().reset_index(drop=True)
-scores = diagnostic_tool_clean_df.iloc[2:, 3].dropna().reset_index(drop=True)
-references = diagnostic_tool_clean_df.iloc[2:, 5].dropna().reset_index(drop=True)
+
+# カラム名を設定
+diagnostic_tool_clean_df.columns = ['Question', 'Choice', 'Score', 'Reference']
+
+# データの抽出
+questions = diagnostic_tool_clean_df['Question'][2:].reset_index(drop=True)
+choices = diagnostic_tool_clean_df['Choice'][2:].reset_index(drop=True)
+scores = diagnostic_tool_clean_df['Score'][2:].reset_index(drop=True)
+references = diagnostic_tool_clean_df['Reference'][2:].reset_index(drop=True)
 
 # Combine into a single DataFrame for easier manipulation
 diagnostic_data = pd.DataFrame({
@@ -45,7 +50,7 @@ def question(id):
             return redirect(url_for('analysis'))
 
     question = diagnostic_data['Question'].iloc[id]
-    choice_list = diagnostic_data['Choice'].iloc[id].split('、')
+    choice_list = diagnostic_data['Choice'].iloc[id].split(',')
     reference = diagnostic_data['Reference'].iloc[id]
     progress = (id + 1) / len(diagnostic_data) * 100
 
@@ -65,8 +70,8 @@ def result():
 def calculate_score(answers):
     total_score = 0
     for i, answer in enumerate(answers):
-        choice_list = diagnostic_data['Choice'].iloc[i].split('、')
-        score_list = diagnostic_data['Score'].iloc[i].split('、')
+        choice_list = diagnostic_data['Choice'].iloc[i].split(',')
+        score_list = diagnostic_data['Score'].iloc[i].split(',')
         score_dict = dict(zip(choice_list, score_list))
         total_score += float(score_dict.get(answer, 0))
     return total_score
