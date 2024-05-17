@@ -35,8 +35,28 @@ body {
     margin-bottom: 20px;
 }
 
-.question-box form div {
+.choice-container {
     margin-bottom: 10px;
+}
+
+.choice-label {
+    display: block;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.choice-label:hover {
+    background-color: #f0f0f0;
+}
+
+.choice-container input[type="radio"] {
+    display: none;
+}
+
+.choice-container input[type="radio"]:checked + .choice-label {
+    background-color: #d0d0d0;
 }
 
 .question-box form button {

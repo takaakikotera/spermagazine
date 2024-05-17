@@ -24,9 +24,9 @@
             {% endwith %}
             <form method="post">
                 {% for choice in choices %}
-                    <div>
+                    <div class="choice-container">
                         <input type="radio" id="{{ choice }}" name="choice" value="{{ choice }}">
-                        <label for="{{ choice }}">{{ choice }}</label>
+                        <label for="{{ choice }}" class="choice-label">{{ choice }}</label>
                     </div>
                 {% endfor %}
                 <button type="submit">Next</button>
