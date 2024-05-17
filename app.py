@@ -1,20 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
+import os
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key')
 
 # Load the diagnostic data
-file_path = '/mnt/data/メディア＆診断ツール.xlsx'
+file_path = '/path/to/your/diagnosis_tool.xlsx'  # Correct the file path
 xls = pd.ExcelFile(file_path)
 diagnostic_tool_df = pd.read_excel(xls, '診断ツール')
 
 # Clean and prepare the data
 diagnostic_tool_clean_df = diagnostic_tool_df.dropna(how='all').reset_index(drop=True)
-questions = diagnostic_tool_clean_df.iloc[2:, 1].dropna().reset_index(drop=True)
-choices = diagnostic_tool_clean_df.iloc[2:, 2].dropna().reset_index(drop=True)
-scores = diagnostic_tool_clean_df.iloc[2:, 3].dropna().reset_index(drop=True)
-references = diagnostic_tool_clean_df.iloc[2:, 5].dropna().reset_index(drop=True)
+questions = diagnostic_tool_clean_df.iloc[2:, 1].dropna().reset_index(dropよ)
+choices = diagnostic_tool_clean_df.iloc[2:, 2].dropna().reset_index(dropよ)
+scores = diagnostic_tool_clean_df.iloc[2:, 3].dropna().reset_index(dropよ)
+references = diagnostic_tool_clean_df.iloc[2:, 5].dropna().reset_index(dropよ)
 
 # Combine into a single DataFrame for easier manipulation
 diagnostic_data = pd.DataFrame({
