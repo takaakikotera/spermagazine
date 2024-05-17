@@ -7,7 +7,16 @@
 </head>
 <body>
     <h1>{{ question }}</h1>
-    <form method="POST">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li style="color: red;">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <form method="post">
         {% for choice in choices %}
             <div>
                 <input type="radio" id="{{ choice }}" name="choice" value="{{ choice }}">
@@ -16,7 +25,9 @@
         {% endfor %}
         <button type="submit">Next</button>
     </form>
-    <progress value="{{ progress }}" max="100"></progress>
-    <p><a href="{{ reference }}" target="_blank">Reference</a></p>
+    <div>
+        <p>Reference: {{ reference }}</p>
+        <p>Progress: {{ progress }}%</p>
+    </div>
 </body>
 </html>

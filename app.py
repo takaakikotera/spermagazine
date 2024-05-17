@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import pandas as pd
 import os
 
@@ -42,7 +42,10 @@ def question(id):
             return "Question ID out of range", 404
         
         if request.method == 'POST':
-            answer = request.form['choice']
+            answer = request.form.get('choice')
+            if answer is None:
+                flash('Please select an option before proceeding.')
+                return redirect(url_for('question', id=id))
             if 'answers' not in session:
                 session['answers'] = []
             session['answers'].append(answer)
