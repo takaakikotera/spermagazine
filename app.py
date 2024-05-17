@@ -45,6 +45,7 @@ def question(id):
             if 'answers' not in session:
                 session['answers'] = []
             session['answers'].append(answer)
+            print(f"Answers so far: {session['answers']}")  # デバッグ用の出力
             
             if id < len(diagnostic_data) - 1:
                 return redirect(url_for('question', id=id + 1))
@@ -67,6 +68,7 @@ def analysis():
 @app.route('/result')
 def result():
     answers = session.get('answers', [])
+    print(f"Final Answers: {answers}")  # デバッグ用の出力
     score = calculate_score(answers)
     return render_template('result.html', score=score)
 
