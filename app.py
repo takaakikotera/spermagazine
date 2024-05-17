@@ -14,10 +14,6 @@ diagnostic_tool_df = pd.read_excel(xls, '診断ツール')
 diagnostic_tool_clean_df = diagnostic_tool_df.dropna(how='all').reset_index(drop=True)
 diagnostic_tool_clean_df.columns = ['Question', 'Choice', 'Score', 'Reference']
 
-# デバッグ用の出力
-print("Diagnostic Tool Clean DataFrame:")
-print(diagnostic_tool_clean_df)
-
 # データの抽出
 questions = diagnostic_tool_clean_df['Question']
 choices = diagnostic_tool_clean_df['Choice']
@@ -42,6 +38,9 @@ def index():
 @app.route('/question/<int:id>', methods=['GET', 'POST'])
 def question(id):
     try:
+        if id >= len(diagnostic_data):
+            return "Question ID out of range", 404
+        
         if request.method == 'POST':
             answer = request.form['choice']
             if 'answers' not in session:
